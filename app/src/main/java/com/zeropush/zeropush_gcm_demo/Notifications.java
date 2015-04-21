@@ -1,51 +1,26 @@
 package com.zeropush.zeropush_gcm_demo;
 
 import android.annotation.TargetApi;
-import android.os.StrictMode;
-import android.os.Build;
-
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.zeropush.sdk.ZeroPush;
-import com.zeropush.sdk.ZeroPushResponseHandler;
-
-import org.apache.http.Header;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 
 public class Notifications extends Activity {
-
-    private ZeroPush zeroPush;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
-        zeroPush = new ZeroPush("zeropush-app-token", "gcm-project-number", this);
-        zeroPush.verifyCredentials(new ZeroPushResponseHandler(){
-            @Override
-            public void handle(JSONObject response, int statusCode, Error error) {
-                if(error != null) {
-                    Log.e("DemoApp", error.getMessage());
-                    return;
-                }
-                Log.d("DemoApp", response.toString());
-            }
-        });
-
-        zeroPush.registerForRemoteNotifications();
         activateStrictMode();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //zeroPush.registerForRemoteNotifications();
     }
 
     @Override

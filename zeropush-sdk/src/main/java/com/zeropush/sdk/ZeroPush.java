@@ -5,7 +5,6 @@ package com.zeropush.sdk;
  */
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -13,17 +12,17 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.apache.http.Header;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.ResponseHandlerInterface;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
-import org.json.*;
-import com.loopj.android.http.*;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class ZeroPush {
 
@@ -46,12 +45,12 @@ public class ZeroPush {
     private String apiKey;
     private String senderId;
     private String deviceToken;
-    private Activity delegate;
+    private Context delegate;
 
-    public ZeroPush(String apiKey, String senderId, Activity delegate){
+    public ZeroPush(String apiKey, String senderId, Context context){
         this.apiKey = apiKey;
         this.senderId = senderId;
-        this.delegate = delegate;
+        this.delegate = context;
         httpClient.setUserAgent(UserAgent);
         sharedInstance = this;
     }
@@ -262,10 +261,9 @@ public class ZeroPush {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(delegate);
         if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, delegate, PLAY_SERVICES_RESOLUTION_REQUEST).show();
+                Log.e(TAG, "There was a problem to init Google Play Services");
             } else {
                 Log.i(TAG, "This device is not supported.");
-                delegate.finish();
             }
             return false;
         }
